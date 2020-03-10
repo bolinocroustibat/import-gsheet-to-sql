@@ -81,9 +81,19 @@ class GoogleSheet {
 				}
 			}
 			// echo("COLUMNS TO CREATE: ".$columns_nb." \n"); // debug
-			$partial_query_string = 'id INTEGER PRIMARY KEY AUTOINCREMENT'; // ONLY FOR SQLITE
+			if($db->getAttribute(PDO::ATTR_DRIVER_NAME) == "mysql") {
+				$partial_query_string = 'id INT(6) UNSIGNED PRIMARY KEY AUTO_INCREMENT';
+			}
+			else if($db->getAttribute(PDO::ATTR_DRIVER_NAME) == "sqlite") {
+				$partial_query_string = 'id INTEGER PRIMARY KEY AUTOINCREMENT';
+			}
 			for ($n = 0; $n <= $columns_nb; $n++) {
-				$partial_query_string = $partial_query_string.', col'.$n.' VARCHAR';
+				if($db->getAttribute(PDO::ATTR_DRIVER_NAME) == "mysql") {
+					$partial_query_string = $partial_query_string.', col'.$n.' VARCHAR(255)';
+				}
+				else if($db->getAttribute(PDO::ATTR_DRIVER_NAME) == "sqlite") {
+					$partial_query_string = $partial_query_string.', col'.$n.' VARCHAR';
+				}
 			}
 			$query_string = 'CREATE TABLE "'.$key.'" ('.$partial_query_string.')';
 			echo ($query_string."\n\n"); // debug
@@ -105,7 +115,7 @@ class GoogleSheet {
 					$partial_query_string_2 = $partial_query_string_2.', "'.$row[$n].'"';
 					$n += 1;
 				}
-				$query_string = 'INSERT INTO "'.$key.'" ('.$partial_query_string_1.') VALUES ('.$partial_query_string_2.')';
+				$query_string = 'INSERT INTO `'.$key.'` ('.$partial_query_string_1.') VALUES ('.$partial_query_string_2.')';
 				echo ($query_string."\n");
 				$db->query($query_string);
 			}
