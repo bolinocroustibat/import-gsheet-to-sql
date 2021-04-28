@@ -1,3 +1,6 @@
+PHP script to import a Google Sheet data into a SQL (MySQL or SQLite) database.
+
+
 ## Prerequisite
 
 **Your Google Sheet must have its first tab as the index to the other tabs ids.**
